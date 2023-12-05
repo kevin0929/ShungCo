@@ -7,11 +7,11 @@ warnings.filterwarnings("ignore")
 
 
 class User:
-    def __init__(self, username: str, password: str) -> None:
+    def __init__(self, username: str, password: str) -> dict:
         self.username = username
         self.password = password
 
-    def Auth(self) -> bool:
+    def login(self) -> bool:
         # check if username and password are not empty
         if (self.username or self.password) is None:
             logging.info("Your username or password is empty")
@@ -30,7 +30,7 @@ class User:
 
         try:
             df = pd.read_sql(
-                f"SELECT password FROM {table_name} WHERE username = '{self.username}'",
+                f"SELECT password, role FROM {table_name} WHERE username = '{self.username}'",
                 conn,
             )
         except Exception as err:
@@ -38,15 +38,10 @@ class User:
             return False
 
         correct_password = df["password"].values[0]
+        role = df["role"].values[0]
 
         # compare correct password and input password
         if self.password == correct_password:
-            return True
+            return {"flag": True, "role": role}
         else:
             return False
-
-
-if __name__ == "__main__":
-    user = User("admin", "admin")
-    flag = user.Auth()
-    print(flag)
