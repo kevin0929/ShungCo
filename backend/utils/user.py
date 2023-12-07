@@ -2,46 +2,57 @@ import psycopg2
 import logging
 import pandas as pd
 import warnings
+import hashlib
+
+from utils.database import database_init
 
 warnings.filterwarnings("ignore")
 
 
 class User:
-    def __init__(self, username: str, password: str) -> dict:
+    def __init__(self, username: str, password: str):
         self.username = username
         self.password = password
 
-    def login(self) -> bool:
+    def hash_passwd(self, password: str) -> str:
+        password = hashlib.sha256(password.encode("UTF-8")).hexdigest()[:16]
+
+        return password
+
+    def login(self) -> dict:
         # check if username and password are not empty
         if (self.username or self.password) is None:
-            logging.info("Your username or password is empty")
-            return False
+            return {"flag": False, "msg": "Username or password is empty."}
+
+        # hash password
+        self.password = self.hash_passwd(self.password)
 
         # Connect to database
-        conn_info = ["127.0.0.1", "shenclass", "postgres", "tn78192712301158"]
-        conn_string = "host={0} user={1} dbname={2} password={3}".format(
-            conn_info[0], conn_info[2], conn_info[1], conn_info[3]
-        )
-        conn = psycopg2.connect(conn_string)
-
-        logging.info(f"Successfully connected to {conn_info[1]}")
+        conn = database_init()
+        if not conn:
+            return {"flag": False, "msg": "Connect to database failed."}
 
         table_name = "loginID"
 
         try:
-            df = pd.read_sql(
-                f"SELECT password, role FROM {table_name} WHERE username = '{self.username}'",
-                conn,
+            # prevent SQL injection, we need to use parameter query
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT password, role FROM {} WHERE username = %s".format(table_name),
+                (self.username,),
             )
+            row = cursor.fetchone()
+            cursor.close()
         except Exception as err:
-            logging.info(f"Run into error when read database, error msg : {err}")
-            return False
+            return {"flag": False, "msg": f"{err}"}
 
-        correct_password = df["password"].values[0]
-        role = df["role"].values[0]
+        if row is None:
+            return {"flag": False, "msg": "User not found."}
+
+        correct_password, role = row
 
         # compare correct password and input password
         if self.password == correct_password:
             return {"flag": True, "role": role}
         else:
-            return False
+            return {"flag": False, "msg": "Password is incorrect."}

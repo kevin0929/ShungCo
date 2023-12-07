@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -54,20 +55,22 @@
     }
 
     .logout-btn {
-    background-color: #ffbb98;
-    color: #000;
-    border: none;
-    padding: 14px 16px;  /* 調整 padding 以匹配 navbar 的內容 */
-    text-align: center;
-    text-decoration: none;
-    font-size: 16px;
-    margin-top: auto;
-    cursor: pointer;
-    border-radius: 4px;
-    align-self: flex-start;
-    margin-left: 16px;
-    width: calc(100% - 32px);  /* 設定寬度為 Navbar 寬度減去左右 margin 的總和 */
-}
+      background-color: #ffbb98;
+      color: #000;
+      border: none;
+      padding: 14px 16px;
+      /* 調整 padding 以匹配 navbar 的內容 */
+      text-align: center;
+      text-decoration: none;
+      font-size: 16px;
+      margin-top: auto;
+      cursor: pointer;
+      border-radius: 4px;
+      align-self: flex-start;
+      margin-left: 16px;
+      width: calc(100% - 32px);
+      /* 設定寬度為 Navbar 寬度減去左右 margin 的總和 */
+    }
 
 
     .logout-btn:hover {
@@ -92,6 +95,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <div class="navbar">
@@ -118,7 +122,7 @@
     const studentName = "小盛";
     const studentEmail = "nextfaker@isme.com.tw";
     const violationCount = 0;
-  
+
     // 更新學生資訊
     document.querySelector(".student-info").innerHTML = `
       <p>學生名稱: ${studentName}</p>
@@ -236,4 +240,5 @@
   </script>
 
 </body>
+
 </html>

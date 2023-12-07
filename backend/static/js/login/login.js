@@ -16,8 +16,9 @@ function summit() {
                 return;
             }
             else {
-                console.log("Password is wrong.");
-                alert("Get out bitch!");
+                response.json().then(data => {
+                    alert(data.msg);
+                })
             }
         })
         .catch(error => {

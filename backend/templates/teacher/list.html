@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/teacher/list.css') }}">
+    <script src="{{ url_for('static', filename='js/teacher/list.js') }}"></script>
+    <title>Your Web Page</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="navbar">
+            <div class="logo">Logo</div>
+            <div class="nav-links">
+                <button class="nav-button">學生管理</button>
+                <button class="nav-button">影片管理</button>
+            </div>
+            <button class="logout-button">登出</button>
+            <div class="made-by">made by kevin</div>
+        </div>
+        <div class="content">
+            <h1>新增學員名單</h1>
+            <div class="csv-preview">
+                <!-- 預覽CSV檔中的學員（初始預覽框） -->
+            </div>
+            <div class="csv-upload">
+                <h2>上傳CSV檔</h2>
+                <input type="file" accept=".csv" id="csvFileInput">
+                <input type="button" class="upload-button" onclick="upload()">上傳CSV檔</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
