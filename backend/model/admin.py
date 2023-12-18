@@ -46,7 +46,6 @@ def manage():
 @login_required("admin")
 def change_password():
     data = request.json
-    old_password = data["old_password"]
     new_password = data["new_password"]
     username = data["username"]
 
@@ -55,19 +54,10 @@ def change_password():
         conn = database_init()
         cursor = conn.cursor()
 
-        # check old password whether correct, if correct change password
+        # change password
         table_name = "loginID"
-
-        correct_old_password_df = pd.read_sql(
-            f"SELECT password FROM {table_name} WHERE username = '{username}'"
-        )
-        correct_old_password = correct_old_password_df["password"]
-
-        if old_password == correct_old_password:
-            query_state = f"UPDATE {table_name} SET password = '{new_password}' WHERE username = '{username}'"
-            cursor.execute(query_state)
-        else:
-            return jsonify({"msg": "old password is wrong!"})
+        query_state = f"UPDATE {table_name} SET password = '{new_password}' WHERE username = '{username}'"
+        cursor.execute(query_state)
     except Exception as err:
         return jsonify({"msg": err})
 
