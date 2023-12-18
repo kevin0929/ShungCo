@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>小盛線上補課系統 - 影片預約區</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/student/reserve.css') }}">
+  <link rel="icon" type="image/jpg" href="{{ url_for('static', filename='img/logo.jpg') }}">
+  <script src="{{ url_for('static', filename='js/student/reserve.js') }}"></script>
+</head>
+
+<body>
+
+  <div class="navbar">
+    <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Shungco"
+      style="max-width: 200px; max-height: 200px;">
+    <a href=" {{ url_for('student.index') }}">學生主頁面</a>
+    <a href=" {{ url_for('student.video') }}">補課影片區</a>
+    <a href=" {{ url_for('student.reserve') }}">補課預約區</a>
+    <button class="logout-btn" onclick="logout()">登出</button>
+    <div class="made-by">made by kevin</div>
+  </div>
+
+  <div class="content">
+    <h2>預約區</h2>
+    <p>這裡是預約區的內容。</p>
+
+    <!-- 預約表格 -->
+    <table>
+      <thead>
+        <tr>
+          <th>影片名稱</th>
+          <th>預約</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>控線教學</td>
+          <td><input type="checkbox" id="reserveCheckboxA"></td>
+        </tr>
+        <tr>
+          <td>拉扯解說</td>
+          <td><input type="checkbox" id="reserveCheckboxB"></td>
+        </tr>
+        <!-- 可以依需求添加更多影片 -->
+      </tbody>
+    </table>
+
+    <!-- 確認按鈕 -->
+    <button onclick="confirmReservation()"
+      style='margin-left:35px; margin-top:5px; width: 50px; height: 30px'>預約</button>
+  </div>
+</body>
+
+</html>

@@ -15,33 +15,34 @@ from datetime import timedelta
 
 from utils.user import User
 from utils.auth import login_required
-from utils.list import StudentList
+
+from model.admin import admin_bp
+from model.teacher import teacher_bp
+from model.student import student_bp
+
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.urandom(24)
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=30)
 
+# registy other route blueprint
+api2prefix = [
+    (admin_bp, "/admin"),
+    (teacher_bp, "/teacher"),
+    (student_bp, "/student"),
+]
+for api, prefix in api2prefix:
+    app.register_blueprint(api, url_prefix=prefix)
+
 
 @app.route("/")
 def index():
-    return {"message": "I am still living."}
+    return redirect("/login")
 
 
 @app.route("/login")
 def login():
     return render_template("login/login.html")
-
-
-@app.route("/student")
-@login_required("student")
-def student():
-    return render_template("student/student.html")
-
-
-@app.route("/teacher")
-@login_required("teacher")
-def teacher():
-    return render_template("teacher/list.html")
 
 
 @app.route("/verify", methods=["POST"])
@@ -69,27 +70,7 @@ def verify():
         session["role"] = role
         session.permanent = True
 
-        return redirect(url_for(f"{role}"))
-
-
-@app.route("/list", methods=["POST"])
-def upload_list():
-    # receive csv file from frontend
-    data = request.files["csvfile"]
-    df = pd.read_csv(data)
-
-    # upload student list
-    stlist = StudentList(df)
-    upload_info_dict = stlist.upload_list()
-    print(upload_info_dict["msg"])
-
-    if not upload_info_dict["flag"]:
-        error_msg = upload_info_dict["msg"]
-        return jsonify({"msg", f"{error_msg}"})
-    else:
-        upload_msg = upload_info_dict["msg"]
-
-    return "OK"
+        return redirect(url_for(f"{role}.index"))
 
 
 if __name__ == "__main__":

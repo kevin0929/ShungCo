@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>小盛線上補課系統 - 教師主頁面</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/teacher/upload.css') }}">
+  <title>小盛線上補課系統 - 學生主頁面</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/student/index.css') }}">
   <link rel="icon" type="image/jpg" href="{{ url_for('static', filename='img/logo.jpg') }}">
 </head>
 
@@ -14,9 +14,9 @@
   <div class="navbar">
     <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Shungco"
       style="max-width: 200px; max-height: 200px;">
-    <a href=" {{ url_for('teacher.index') }}">教師主頁面</a>
-    <a href=" {{ url_for('teacher.upload') }}">學生管理</a>
-    <a href=" {{ url_for('teacher.video') }}">影片管理</a>
+    <a href=" {{ url_for('student.index') }}">學生主頁面</a>
+    <a href=" {{ url_for('student.video') }}">補課影片區</a>
+    <a href=" {{ url_for('student.reserve') }}">補課預約區</a>
     <button class="logout-btn" onclick="logout()">登出</button>
     <div class="made-by">made by kevin</div>
   </div>

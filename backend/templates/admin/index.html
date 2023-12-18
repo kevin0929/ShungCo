@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>小盛線上補課系統 - 管理者頁面</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin/index.css') }}">
+  <link rel="icon" type="image/jpg" href="{{ url_for('static', filename='img/logo.jpg') }}">
+</head>
+
+<body>
+  <div class="navbar">
+    <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Shungco"
+      style="max-width: 200px; max-height: 200px;">
+    <a href=" {{ url_for('admin.index') }}">教師主頁面</a>
+    <a href=" {{ url_for('admin.manage') }}">權限管理區</a>
+    <button class="logout-btn" onclick="logout()">登出</button>
+  </div>
+  <div class="content">
+    <h1>你是管理員!</h1>
+
+  </div>
+
+  <script>
+    function logout() {
+      // 使用 window.confirm() 顯示確認對話框
+      const confirmLogout = window.confirm("確定要登出嗎？");
+      // 如果用戶點擊確認，執行登出相關邏輯
+      if (confirmLogout) {
+        // 在這裡處理登出的相關邏輯
+        alert("登出成功！");
+      } else {
+        // 用戶取消登出，不執行任何動作
+        // 這裡可以添加取消登出時的相應處理
+      }
+    }
+  </script>
+
+</body>
+
+</html>

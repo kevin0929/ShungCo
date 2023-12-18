@@ -44,13 +44,13 @@ function upload() {
     formData.append("csvfile", file)
 
     // post to backend route 'list'
-    fetch("/list", {
+    fetch("/teacher/list", {
         method: "POST",
         body: formData,
     })
         .then(response => {
             if (response.ok) {
-                alert("上傳成功");
+                alert("上傳成功")
             }
             else {
                 alert("上傳失敗");
