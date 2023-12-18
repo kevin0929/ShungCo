@@ -1,4 +1,5 @@
 import logging
+import hashlib
 import pandas as pd
 
 from flask import Blueprint, render_template, url_for, redirect, request, jsonify
@@ -48,6 +49,11 @@ def change_password():
     data = request.json
     new_password = data["new_password"]
     username = data["username"]
+
+    print(username)
+
+    # hash password
+    new_password = hashlib.sha256(new_password.encode("UTF-8")).hexdigest()[:16]
 
     # connect to database
     try:

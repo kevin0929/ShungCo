@@ -61,3 +61,7 @@ function upload() {
             alert("發生錯誤，請稍後再試!");
         })
 }
+
+function logout() {
+    window.location.href = "/login";
+}

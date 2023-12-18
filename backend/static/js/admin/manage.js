@@ -5,17 +5,13 @@ function openChangePasswordModal(username) {
     var changePasswordForm = document.getElementById("changePasswordForm");
 
     changePasswordForm.addEventListener("submit", function (event) {
-        event.preventDefault;
+        event.preventDefault();
 
         // get input
-        var oldPasswordInput = document.getElementById("old_password");
         var newPasswordInput = document.getElementById("new_password");
-
-        var oldPassword = oldPasswordInput.value
         var newPassword = newPasswordInput.value
 
-        data = {
-            "old_password": oldPassword,
+        var data = {
             "new_password": newPassword,
             "username": username
         }
