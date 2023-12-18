@@ -136,7 +136,6 @@ function closeModal(modalId) {
     modal.style.display = "none";
 }
 
-// 假設有一個 logout 函數
 function logout() {
     window.location.href = "/login";
 }
