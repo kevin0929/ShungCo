@@ -12,6 +12,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y bash
+      - run: ls
       - run: cd backend/ci
       - name: Run lint.sh
         run:
