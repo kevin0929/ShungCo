@@ -9,4 +9,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: ehco "test"
-      - run: ci/lint.sh
+      - run: ./backend/ci/lint.sh
