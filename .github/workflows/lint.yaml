@@ -15,6 +15,9 @@ jobs:
 
       - name: Fetch repository code
         uses: actions/checkout@v4
+      
+      - name: Grant execution permission for script
+        run: chmod +x ci/lint.sh
 
       - name: Run lint.sh
         run:
