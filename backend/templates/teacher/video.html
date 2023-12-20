@@ -5,7 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>小盛線上補課系統 - 補課影片區</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/teacher/upload.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/teacher/video.css') }}">
+  <script src="{{ url_for('static', filename='js/teacher/video.js') }}"></script>
   <link rel="icon" type="image/jpg" href="{{ url_for('static', filename='img/logo.jpg') }}">
 </head>
 
@@ -17,18 +18,25 @@
     <a href=" {{ url_for('teacher.index') }}">教師主頁面</a>
     <a href=" {{ url_for('teacher.upload') }}">學生管理</a>
     <a href=" {{ url_for('teacher.video') }}">影片管理</a>
+    <a href=" {{ url_for('teacher.course') }}">課程管理</a>
     <button class="logout-btn" onclick="logout()">登出</button>
     <div class="made-by">made by kevin</div>
   </div>
 
   <div class="content">
     <h2>補課影片區</h2>
-    <p>這裡是補課影片的內容。</p>
-    <!--showVideos();-->
-  </div>
-  <script>
+    <p>在這裡你可以上傳補課影片至補課區。</p>
 
-  </script>
+    <form id="upload-form" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="video">選擇要上傳的補課影片：</label>
+        <input type="file" id="video" name="video" accept=".mp4, .avi, .mov, .mp3" onchange="uploadVideo()">
+      </div>
+      <div class="form-group">
+        <button type="submit" class="upload-button">上傳影片</button>
+      </div>
+    </form>
+  </div>
 </body>
 
 </html>

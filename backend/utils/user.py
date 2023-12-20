@@ -1,6 +1,3 @@
-import psycopg2
-import logging
-import pandas as pd
 import warnings
 import hashlib
 

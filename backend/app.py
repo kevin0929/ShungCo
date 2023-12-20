@@ -1,6 +1,4 @@
 import os
-import requests
-import pandas as pd
 from flask import (
     Flask,
     jsonify,
@@ -9,12 +7,10 @@ from flask import (
     request,
     url_for,
     session,
-    abort,
 )
 from datetime import timedelta
 
 from utils.user import User
-from utils.auth import login_required
 
 from model.admin import admin_bp
 from model.teacher import teacher_bp

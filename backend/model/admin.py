@@ -50,8 +50,6 @@ def change_password():
     new_password = data["new_password"]
     username = data["username"]
 
-    print(username)
-
     # hash password
     new_password = hashlib.sha256(new_password.encode("UTF-8")).hexdigest()[:16]
 
