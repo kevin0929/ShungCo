@@ -1,0 +1,12 @@
+name: ci-lint
+on:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  ci-lint-actions:
+    runs-on: ubuntu-latest
+    steps:
+      - run: ehco "test"
+      - run: ci/lint.sh
