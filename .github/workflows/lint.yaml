@@ -12,6 +12,10 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y bash
+      
+      - name: Install lint test dependicies
+        run:
+          pip install ruff
 
       - name: Fetch repository code
         uses: actions/checkout@v4
