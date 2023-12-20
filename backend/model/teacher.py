@@ -90,11 +90,12 @@ def upload_video():
     return redirect(url_for("teacher.video"))
 
 
-@teacher_bp.route("/change_title", methods=["POST"])
+@teacher_bp.route("/change_course", methods=["PUT"])
 @login_required("teacher")
-def change_title():
+def change_course():
     data = request.json
-    new_title = data["new_title"]
+    change_column = data["change_column"]
+    new_data = data["new_data"]
     course_id = data["course_id"]
 
     # connect to database
@@ -103,61 +104,14 @@ def change_title():
         cursor = conn.cursor()
 
         # change course title depend on course id
-        table_name = CONFIG["CourseTable"]
-        query_state = f"UPDATE {table_name} SET course_title = '{new_title}' WHERE course_id = {course_id}"
-        cursor.execute(query_state)
-    except Exception as err:
-        return jsonify({"msg": err})
+        table_name = sql.Identifier(CONFIG["CourseTable"])
+        column_name = sql.Identifier(change_column)
 
-    # commit
-    conn.commit()
-    cursor.close()
-
-    return redirect(url_for("teacher.course"))
-
-
-@teacher_bp.route("/change_teacher", methods=["POST"])
-@login_required("teacher")
-def change_teacher():
-    data = request.json
-    new_teacher = data["new_teacher"]
-    course_id = data["course_id"]
-
-    # connect to database
-    try:
-        conn = database_init()
-        cursor = conn.cursor()
-
-        # change course title depend on course id
-        table_name = CONFIG["CourseTable"]
-        query_state = f"UPDATE {table_name} SET teacher_name = '{new_teacher}' WHERE course_id = {course_id}"
-        cursor.execute(query_state)
-    except Exception as err:
-        return jsonify({"msg": err})
-
-    # commit
-    conn.commit()
-    cursor.close()
-
-    return redirect(url_for("teacher.course"))
-
-
-@teacher_bp.route("/change_describe", methods=["POST"])
-@login_required("teacher")
-def change_describe():
-    data = request.json
-    new_describe = data["new_describe"]
-    course_id = data["course_id"]
-
-    # connect to database
-    try:
-        conn = database_init()
-        cursor = conn.cursor()
-
-        # change course title depend on course id
-        table_name = CONFIG["CourseTable"]
-        query_state = f"UPDATE {table_name} SET course_describe = '{new_describe}' WHERE course_id = {course_id}"
-        cursor.execute(query_state)
+        query_state = sql.SQL(
+            "UPDATE {} SET {} = %s WHERE course_id = %s", table_name, column_name
+        )
+        query_args = (new_data, course_id)
+        cursor.execute(query_state, query_args)
     except Exception as err:
         return jsonify({"msg": err})
 

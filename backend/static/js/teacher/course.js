@@ -12,12 +12,13 @@ function openModifyTitleModal(id) {
         var newTitle = newTitleInput.value
 
         var data = {
-            "new_title": newTitle,
+            "change_column": "course_title",
+            "new_data": newTitle,
             "course_id": id
         }
 
-        fetch("/teacher/change_title", {
-            method: "POST",
+        fetch("/teacher/change_course", {
+            method: "PUT",
             headers: {
                 "Content-Type": "application/json"
             },
@@ -56,10 +57,14 @@ function openModifyTeacherModal(id) {
         var newTeacherInput = document.getElementById("new_teacher");
         var newTeacher = newTeacherInput.value;
 
-        var data = { "course_id": id, "new_teacher": newTeacher }
+        var data = {
+            "change_column": "teacher_name",
+            "new_data": newTeacher,
+            "course_id": id
+        }
 
-        fetch("/teacher/change_teacher", {
-            method: "POST",
+        fetch("/teacher/change_course", {
+            method: "PUT",
             headers: {
                 "Content-Type": "application/json"
             },
@@ -99,10 +104,14 @@ function openModifyDescribeModal(id) {
         var newDescribeInput = document.getElementById("new_describe");
         var newDescribe = newDescribeInput.value;
 
-        var data = { "course_id": id, "new_describe": newDescribe }
+        var data = {
+            "change_column": "course_describe",
+            "new_data": newDescribe,
+            "course_id": id
+        }
 
-        fetch("/teacher/change_describe", {
-            method: "POST",
+        fetch("/teacher/change_course", {
+            method: "PUT",
             headers: {
                 "Content-Type": "application/json"
             },
