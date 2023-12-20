@@ -14,6 +14,6 @@ jobs:
           sudo apt-get install -y bash
       - name: Run lint.sh
         run: |
-          cd backend/ci
+          cd $GITHUB_WORKSPACE/backend/ci
           ./lint.sh
 
