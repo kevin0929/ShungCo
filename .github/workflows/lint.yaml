@@ -8,5 +8,5 @@ jobs:
   ci-lint-actions:
     runs-on: ubuntu-latest
     steps:
-      - run: ehco "test"
+      - run: echo "test"
       - run: ./backend/ci/lint.sh
