@@ -12,6 +12,10 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y bash
+
+      - name: Fetch repository code
+        uses: actions/checkout@v4
+
       - name: Run lint.sh
         run:
           ci/lint.sh
