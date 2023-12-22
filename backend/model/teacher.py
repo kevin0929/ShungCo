@@ -1,3 +1,4 @@
+import json
 import pandas as pd
 
 from psycopg2 import sql
@@ -27,7 +28,27 @@ def upload():
 @teacher_bp.route("/video")
 @login_required("teacher")
 def video():
-    return render_template("teacher/video.html")
+    # connect to database
+    try:
+        conn = database_init()
+
+        table_name = CONFIG["VideoTable"]
+        df = pd.read_sql(f"SELECT * FROM {table_name}", conn)
+
+        videos = []
+        for idx, row in df.iterrows():
+            video_dict = defaultdict()
+            video_dict["id"] = row["video_id"]
+            video_dict["title"] = row["video_title"]
+            video_dict["describe"] = row["video_describe"]
+            video_dict["course_id"] = row["course_id"]
+            video_dict["teacher_name"] = row["teacher_name"]
+
+            videos.append(video_dict)
+    except Exception as err:
+        return jsonify({"msg": err})
+
+    return render_template("teacher/video.html", videos=videos)
 
 
 @teacher_bp.route("/course")
@@ -75,15 +96,130 @@ def upload_list():
     return jsonify({"msg": upload_msg})
 
 
+@teacher_bp.route("/change_video", methods=["PUT"])
+@login_required("teacher")
+def change_video():
+    data = request.json
+    change_column = data["change_column"]
+    new_data = data["new_data"]
+    video_id = data["video_id"]
+
+    # connect to database
+    try:
+        conn = database_init()
+        cursor = conn.cursor()
+
+        # change column value depend on course id
+        table_name = sql.Identifier(CONFIG["VideoTable"])
+        column_name = sql.Identifier(change_column)
+
+        query_state = sql.SQL("UPDATE {} SET {} = %s WHERE video_id = %s").format(
+            table_name, column_name
+        )
+        query_args = (new_data, video_id)
+        cursor.execute(query_state, query_args)
+    except Exception as err:
+        return jsonify({"msg": err})
+
+    # commit
+    conn.commit()
+    cursor.close()
+
+    return redirect(url_for("teacher.video"))
+
+
+@teacher_bp.route("/delete_video", methods=["POST"])
+@login_required("teacher")
+def delete_video():
+    data = request.json
+    video_id = data["video_id"]
+
+    # connect to database
+    try:
+        conn = database_init()
+        cursor = conn.cursor()
+
+        # delete user from it's username
+        table_name = sql.Identifier(CONFIG["VideoTable"])
+
+        query_state = sql.SQL("DELETE FROM {} WHERE video_id = %s").format(table_name)
+        cursor.execute(query_state, (video_id,))
+    except Exception as err:
+        return jsonify({"msg": err})
+
+    # commit
+    conn.commit()
+    cursor.close()
+
+    return redirect(url_for("teacher.course"))
+
+
 @teacher_bp.route("/upload_video", methods=["POST"])
 @login_required("teacher")
 def upload_video():
-    data = request.files["video"]
-    filename = data.filename
+    # get video
+    video = request.files["video"]
+    video_name = video.filename
+
+    json_data = request.form.get("data")  # 使用 .get 以防没有 "data" 字段
+    if json_data:
+        try:
+            video_info = json.loads(json_data)
+            video_title = video_info["video_title"]
+            video_describe = video_info["video_describe"]
+            course_id = video_info["course_id"]
+        except json.JSONDecodeError:
+            return jsonify({"msg": "Invalid JSON data!"}), 400
+    else:
+        return jsonify({"msg": "No video info provided!"}), 400
+
+    # save video info to database
+    try:
+        conn = database_init()
+        cursor = conn.cursor()
+
+        # find teacher name by course id from course table
+        video_table = sql.Identifier(CONFIG["VideoTable"])
+        course_table = sql.Identifier(CONFIG["CourseTable"])
+
+        query_state = sql.SQL(
+            "SELECT teacher_name FROM {} WHERE course_id = %s"
+        ).format(course_table)
+        cursor.execute(query_state, (course_id,))
+        teacher_name = cursor.fetchone()[0]
+
+        # find max id in video table
+        query_state = sql.SQL("SELECT MAX(video_id) FROM {}").format(video_table)
+        cursor.execute(query_state)
+        max_video_id = cursor.fetchone()[0]
+
+        if max_video_id is None:
+            max_video_id = 0
+        else:
+            max_video_id = int(max_video_id) + 1
+
+        # insert data into database
+        query_state = sql.SQL("INSERT INTO {} VALUES (%s, %s, %s, %s, %s)").format(
+            video_table
+        )
+        insert_data = (
+            max_video_id,
+            video_title,
+            video_describe,
+            course_id,
+            teacher_name,
+        )
+        cursor.execute(query_state, insert_data)
+    except Exception as err:
+        return jsonify({"msg": err})
+
+    # commit
+    conn.commit()
+    cursor.close()
 
     # save video to video folder
-    if data:
-        data.save(f"../video/{filename}")
+    if video:
+        video.save(f"../video/{video_name}")
     else:
         return jsonify({"msg": "no file uploaded!"})
 
@@ -103,12 +239,12 @@ def change_course():
         conn = database_init()
         cursor = conn.cursor()
 
-        # change course title depend on course id
+        # change column value depend on course id
         table_name = sql.Identifier(CONFIG["CourseTable"])
         column_name = sql.Identifier(change_column)
 
-        query_state = sql.SQL(
-            "UPDATE {} SET {} = %s WHERE course_id = %s", table_name, column_name
+        query_state = sql.SQL("UPDATE {} SET {} = %s WHERE course_id = %s").format(
+            table_name, column_name
         )
         query_args = (new_data, course_id)
         cursor.execute(query_state, query_args)
@@ -134,9 +270,10 @@ def delete_course():
         cursor = conn.cursor()
 
         # delete user from it's username
-        table_name = CONFIG["CourseTable"]
-        query_state = f"DELETE FROM {table_name} WHERE course_id = {course_id}"
-        cursor.execute(query_state)
+        table_name = sql.Identifier(CONFIG["CourseTable"])
+
+        query_state = sql.SQL("DELETE FROM {} WHERE course_id = %s").format(table_name)
+        cursor.execute(query_state, (course_id,))
     except Exception as err:
         return jsonify({"msg": err})
 

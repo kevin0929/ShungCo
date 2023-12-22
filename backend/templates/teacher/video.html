@@ -24,10 +24,49 @@
   </div>
 
   <div class="content">
-    <h2>補課影片區</h2>
-    <p>在這裡你可以上傳補課影片至補課區。</p>
+    <h1>在這裡你可以修改影片資訊!</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>影片編號</th>
+          <th>影片標題</th>
+          <th>影片描述</th>
+          <th>課程編號</th>
+          <th>授課老師</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for video in videos %}
+        <tr>
+          <td> {{ video.id }} </td>
+          <td> {{ video.title }} </td>
+          <td> {{ video.describe }}</td>
+          <td> {{ video.course_id }} </td>
+          <td> {{ video.teacher_name }} </td>
+          <td>
+            <button onclick="openModifyTitleModal('{{ video.id }}')"> 修改影片標題 </button>
+            <button onclick="openModifyDescribeModal('{{ video.id }}')"> 修改影片描述 </button>
+            <button onclick="openDeleteVideoModal('{{ video.id }}')"> 刪除影片 </button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
 
-    <form id="upload-form" enctype="multipart/form-data">
+    <h2>新增影片</h2>
+    <form id="upload-form">
+      <div class="form-group">
+        <label for="video-title">影片標題：</label>
+        <input type="text" id="video-title" name="video-title" onchange="uploadCourse()" required>
+      </div>
+      <div class="form-group">
+        <label for="video-description">影片描述：</label>
+        <textarea id="video-description" name="video-description" rows="4" required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="course-id">課程編號：</label>
+        <input type="text" id="course-id" name="course-id" required>
+      </div>
       <div class="form-group">
         <label for="video">選擇要上傳的補課影片：</label>
         <input type="file" id="video" name="video" accept=".mp4, .avi, .mov, .mp3" onchange="uploadVideo()">
@@ -36,6 +75,44 @@
         <button type="submit" class="upload-button">上傳影片</button>
       </div>
     </form>
+  </div>
+
+  <!-- JavaScript window (change course title) -->
+  <div class="modal" id="modifyTitleModal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('modifyTitleModal')">&times;</span>
+      <h2>修改影片標題</h2>
+      <form action="" method="post" id="modifyTitleForm">
+        <label for="new_title">新標題：</label>
+        <input type="text" name="new_title" id="new_title" required><br>
+        <button type="submit">確認更改</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- JavaScript window (change video describe) -->
+  <div class="modal" id="modifyDescribeModal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('modifyDescribeModal')">&times;</span>
+      <h2>修改影片描述</h2>
+      <form action="" method="post" id="modifyDescribeForm">
+        <label for="new_describe">新影片描述：</label>
+        <input type="text" name="new_describe" id="new_describe" required><br>
+        <button type="submit">確認更改</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- JavaScript window (change role) -->
+  <div class="modal" id="deleteVideoModal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('deleteVideoModal')">&times;</span>
+      <h2>刪除影片</h2>
+      <div> 確認要刪除? </div>
+      <form id="deleteVideoForm">
+        <button type="submit">確認刪除</button>
+      </form>
+    </div>
   </div>
 </body>
 
