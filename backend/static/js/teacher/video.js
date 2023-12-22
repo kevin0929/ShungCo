@@ -113,7 +113,7 @@ function openDeleteVideoModal(id) {
             .then(response => {
                 if (response.redirected) {
                     alert("刪除成功");
-                    closeModal("deleteCourseModal");
+                    closeModal("deleteVideoModal");
 
                     // refresh page
                     window.location.href = response.url;

@@ -1,3 +1,4 @@
+import os
 import json
 import pandas as pd
 
@@ -77,6 +78,42 @@ def course():
     return render_template("teacher/course.html", courses=courses)
 
 
+@teacher_bp.route("/distribute")
+@login_required("teacher")
+def distribute():
+    # connect to database
+    try:
+        conn = database_init()
+        cursor = conn.cursor()
+
+        student_table = CONFIG["UserTable"]
+        video_table = CONFIG["VideoTable"]
+
+        # fetch student list
+        student_df = pd.read_sql(f"SELECT * FROM {student_table}", conn)
+        students = []
+        for idx, row in student_df.iterrows():
+            if row["role"] == "student":
+                student_dict = defaultdict()
+                student_dict["name"] = row["username"]
+
+                students.append(student_dict)
+
+        # fetch video list
+        video_df = pd.read_sql(f"SELECT * FROM {video_table}", conn)
+        videos = []
+        for idx, row in video_df.iterrows():
+            video_dict = defaultdict()
+            video_dict["id"] = row["video_id"]
+            video_dict["title"] = row["video_title"]
+
+            videos.append(video_dict)
+    except Exception as err:
+        return jsonify({"msg": err})
+
+    return render_template("teacher/distribute.html", students=students, videos=videos)
+
+
 @teacher_bp.route("/list", methods=["POST"])
 def upload_list():
     # receive csv file from frontend
@@ -142,6 +179,14 @@ def delete_video():
         # delete user from it's username
         table_name = sql.Identifier(CONFIG["VideoTable"])
 
+        # delete video file
+        query_state = sql.SQL("SELECT video_url FROM {} WHERE video_id = %s").format(
+            table_name
+        )
+        cursor.execute(query_state, (video_id,))
+        video_url = cursor.fetchone()[0]
+        os.remove(video_url)
+
         query_state = sql.SQL("DELETE FROM {} WHERE video_id = %s").format(table_name)
         cursor.execute(query_state, (video_id,))
     except Exception as err:
@@ -161,7 +206,7 @@ def upload_video():
     video = request.files["video"]
     video_name = video.filename
 
-    json_data = request.form.get("data")  # 使用 .get 以防没有 "data" 字段
+    json_data = request.form.get("data")
     if json_data:
         try:
             video_info = json.loads(json_data)
@@ -198,8 +243,11 @@ def upload_video():
         else:
             max_video_id = int(max_video_id) + 1
 
+        # add video url
+        video_url = f"../video/{video_name}"
+
         # insert data into database
-        query_state = sql.SQL("INSERT INTO {} VALUES (%s, %s, %s, %s, %s)").format(
+        query_state = sql.SQL("INSERT INTO {} VALUES (%s, %s, %s, %s, %s, %s)").format(
             video_table
         )
         insert_data = (
@@ -208,6 +256,7 @@ def upload_video():
             video_describe,
             course_id,
             teacher_name,
+            video_url,
         )
         cursor.execute(query_state, insert_data)
     except Exception as err:
