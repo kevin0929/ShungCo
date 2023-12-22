@@ -84,7 +84,6 @@ def distribute():
     # connect to database
     try:
         conn = database_init()
-        cursor = conn.cursor()
 
         student_table = CONFIG["UserTable"]
         video_table = CONFIG["VideoTable"]
