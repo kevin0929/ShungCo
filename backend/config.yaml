@@ -1,3 +1,4 @@
 UserTable: loginID
 CourseTable: courses
 VideoTable: videos
+StudentVideoTable: student_videos

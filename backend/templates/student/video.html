@@ -17,19 +17,30 @@
       style="max-width: 200px; max-height: 200px;">
     <a href=" {{ url_for('student.index') }}">學生主頁面</a>
     <a href=" {{ url_for('student.video') }}">補課影片區</a>
-    <a href=" {{ url_for('student.reserve') }}">補課預約區</a>
     <button class="logout-btn" onclick="logout()">登出</button>
     <div class="made-by">made by kevin</div>
   </div>
 
   <div class="content">
     <h2>補課影片區</h2>
-    <p>這裡是補課影片的內容。</p>
-    <!--showVideos();-->
-  </div>
-  <script>
+    <p>這裡是你的課程列表。</p>
+    <ul>
+      {% for video in videos %}
+      <li><a href="#" class="video-link" data-url="{{ url_for('static', filename='video/' + video.url) }}">{{
+          video.title }}</a></li>
+      {% endfor %}
+    </ul>
 
-  </script>
+
+
+    <div class="video-player">
+      <h3>播放器</h3>
+      <div id="video-container">
+
+      </div>
+    </div>
+  </div>
+
 </body>
 
 </html>

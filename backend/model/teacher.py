@@ -103,7 +103,6 @@ def distribute():
         videos = []
         for idx, row in video_df.iterrows():
             video_dict = defaultdict()
-            video_dict["id"] = row["video_id"]
             video_dict["title"] = row["video_title"]
 
             videos.append(video_dict)
@@ -243,7 +242,7 @@ def upload_video():
             max_video_id = int(max_video_id) + 1
 
         # add video url
-        video_url = f"../video/{video_name}"
+        video_url = f"static/video/{video_name}"
 
         # insert data into database
         query_state = sql.SQL("INSERT INTO {} VALUES (%s, %s, %s, %s, %s, %s)").format(
@@ -267,7 +266,7 @@ def upload_video():
 
     # save video to video folder
     if video:
-        video.save(f"../video/{video_name}")
+        video.save(f"static/video/{video_name}")
     else:
         return jsonify({"msg": "no file uploaded!"})
 
@@ -375,3 +374,32 @@ def upload_course():
     cursor.close()
 
     return redirect(url_for("teacher.course"))
+
+
+@teacher_bp.route("/distribute_video", methods=["POST"])
+@login_required("teacher")
+def distribute_video():
+    data = request.json
+    student_name = data["student_name"]
+    video_title = data["video_title"]
+
+    # connect to database
+    try:
+        conn = database_init()
+        cursor = conn.cursor()
+
+        # insert data into database
+        table_name = sql.Identifier(CONFIG["StudentVideoTable"])
+
+        # insert data into database
+        query_state = sql.SQL("INSERT INTO {} VALUES (%s, %s)").format(table_name)
+        insert_data = (student_name, video_title)
+        cursor.execute(query_state, insert_data)
+    except Exception as err:
+        return jsonify({"msg": err})
+
+    # commit
+    conn.commit()
+    cursor.close()
+
+    return redirect(url_for("teacher.distribute"))
