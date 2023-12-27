@@ -1,5 +1,6 @@
 flask
-psycopg2
+psycopg2-binary
 ruff
-pandas
+pandas 
 pytest
+PyYaml
