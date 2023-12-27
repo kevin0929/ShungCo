@@ -1,11 +1,11 @@
-name: ci-lint
+name: ci-test
 on:
   push:
     branches:
       - "main"
 
 jobs:
-  ci-lint-actions:
+  ci-lint-test:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Bash
@@ -23,7 +23,28 @@ jobs:
       - name: Grant execution permission for script
         run: chmod +x ci/lint.sh
 
-      - name: Run lint.sh
+      - name: Run lint test
         run:
           ci/lint.sh
+      
+  ci-unit-test:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Set up Bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bash
+      
+      - name: Install unit test dependicies
+        run:
+          pip install pytest
+      
+      - name: Fetch repository code
+        uses: actions/checkout@v4
+
+      - name: Grant execution permission for script
+        run: chmod +x ci/test.sh
+      
+      - name: run unit test
+        run: ci/test.sh
 
