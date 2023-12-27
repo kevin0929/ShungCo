@@ -12,13 +12,13 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y bash
-      
-      - name: Install lint test dependicies
-        run:
-          pip install ruff
 
       - name: Fetch repository code
         uses: actions/checkout@v4
+
+      - name: Install dependicies
+        run:
+          pip install -r requirements.txt
       
       - name: Grant execution permission for script
         run: chmod +x ci/lint.sh
@@ -35,12 +35,12 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y bash
       
-      - name: Install unit test dependicies
-        run:
-          pip install pytest
-      
       - name: Fetch repository code
         uses: actions/checkout@v4
+      
+      - name: Install dependicies
+        run:
+          pip install -r requirements.txt
 
       - name: Grant execution permission for script
         run: chmod +x ci/test.sh
