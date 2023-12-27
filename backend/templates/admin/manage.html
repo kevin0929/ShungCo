@@ -59,6 +59,24 @@
   </div>
 
   <!-- JavaScript window (change role) -->
+  <div class="modal" id="changeRoleModal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('changeRoleModal')">&times;</span>
+      <h2>更改角色</h2>
+      <form action="" method="post" id="changeRoleForm">
+        <label for="new_role">新角色：</label>
+        <select name="new_role" id="new_role" required>
+          <option value="admin"> admin </option>
+          <option value="teacher"> teacher </option>
+          <option value="student"> student </option>
+        </select><br>
+        <button type="submit">確認更改</button>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- JavaScript window (change role) -->
   <div class="modal" id="deleteUserModal">
     <div class="modal-content">
       <span class="close" onclick="closeModal('deleteUserModal')">&times;</span>

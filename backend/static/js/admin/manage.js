@@ -12,12 +12,13 @@ function openChangePasswordModal(username) {
         var newPassword = newPasswordInput.value
 
         var data = {
-            "new_password": newPassword,
+            "change_column": "password",
+            "new_data": newPassword,
             "username": username
         }
 
-        fetch("/admin/change_password", {
-            method: "POST",
+        fetch("/admin/change_personnel", {
+            method: "PUT",
             headers: {
                 "Content-Type": "application/json"
             },
@@ -56,10 +57,14 @@ function openChangeRoleModal(username) {
         var newRoleSelect = document.getElementById("new_role");
         var selectRole = newRoleSelect.value;
 
-        var data = { "username": username, "newRole": selectRole }
+        var data = {
+            "change_column": "role",
+            "new_data": selectRole,
+            "username": username 
+        }
 
-        fetch("/admin/change_role", {
-            method: "POST",
+        fetch("/admin/change_personnel", {
+            method: "PUT",
             headers: {
                 "Content-Type": "application/json"
             },
@@ -99,7 +104,7 @@ function openDeleteUserModal(username) {
         var data = { "username": username }
 
         fetch("/admin/delete_user", {
-            method: "POST",
+            method: "DELETE",
             headers: {
                 "Content-Type": "application/json"
             },

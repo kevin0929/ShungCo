@@ -7,6 +7,7 @@ from collections import defaultdict
 
 from utils.auth import login_required
 from utils.database import database_init
+from utils.config import CONFIG
 
 
 admin_bp = Blueprint("admin", __name__)
@@ -43,15 +44,17 @@ def manage():
     return render_template("admin/manage.html", users=users)
 
 
-@admin_bp.route("/change_password", methods=["POST"])
+@admin_bp.route("/change_personnel", methods=["PUT"])
 @login_required("admin")
-def change_password():
+def change_personnel():
     data = request.json
-    new_password = data["new_password"]
+    change_column = data["change_column"]
+    new_data = data["new_data"]
     username = data["username"]
 
-    # hash password
-    new_password = hashlib.sha256(new_password.encode("UTF-8")).hexdigest()[:16]
+    # hash password if data type is password
+    if change_column == "password":
+        new_data = hashlib.sha256(new_data.encode("UTF-8")).hexdigest()[:16]
 
     # connect to database
     try:
@@ -59,8 +62,9 @@ def change_password():
         cursor = conn.cursor()
 
         # change password
-        table_name = "loginID"
-        query_state = f"UPDATE {table_name} SET password = '{new_password}' WHERE username = '{username}'"
+        table_name = CONFIG["UserTable"]
+
+        query_state = f"UPDATE {table_name} SET {change_column} = '{new_data}' WHERE username = '{username}'"
         cursor.execute(query_state)
     except Exception as err:
         return jsonify({"msg": err})
@@ -72,36 +76,7 @@ def change_password():
     return redirect(url_for("admin.manage"))
 
 
-@admin_bp.route("/change_role", methods=["POST"])
-@login_required("admin")
-def change_role():
-    # read post data from front-end
-    data = request.json
-    username = data["username"]
-    new_role = data["newRole"]
-
-    # connect to database
-    try:
-        conn = database_init()
-        cursor = conn.cursor()
-
-        # update role change to database
-        table_name = "loginID"
-        query_state = (
-            f"UPDATE {table_name} SET role = '{new_role}' WHERE username = '{username}'"
-        )
-        cursor.execute(query_state)
-    except Exception as err:
-        return jsonify({"msg": err})
-
-    # commit
-    conn.commit()
-    cursor.close()
-
-    return redirect(url_for("admin.manage"))
-
-
-@admin_bp.route("/delete_user", methods=["POST"])
+@admin_bp.route("/delete_user", methods=["DELETE"])
 @login_required("admin")
 def delete_user():
     data = request.json
@@ -113,7 +88,7 @@ def delete_user():
         cursor = conn.cursor()
 
         # delete user from it's username
-        table_name = "loginID"
+        table_name = CONFIG["UserTable"]
         query_state = f"DELETE FROM {table_name} WHERE username = '{username}'"
         cursor.execute(query_state)
     except Exception as err:

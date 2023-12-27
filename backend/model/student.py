@@ -32,9 +32,7 @@ def video():
         )
 
         # get student have videos
-        student_have_videos = []
-        for idx, row in df.iterrows():
-            student_have_videos.append(row["video_title"])
+        student_have_videos = [row["video_title"] for idx, row in df.iterrows()]
 
         # get have videos information
         video_table_name = CONFIG["VideoTable"]
