@@ -10,4 +10,4 @@ ShungCo providing an innovation online tutoring e-learning platform.
 
 - Front-end : HTML5 / CSS3 / JavaScript
 - Back-end : Flask (Python) / PostgreSQL
-- DevOps : GitHub Action
+- DevOps : GitHub Actions
